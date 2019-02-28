@@ -5,7 +5,6 @@ const Sell = props => {
     return (
         <div>
             <p>Sell!!!</p>
-            <Link href='/index'>Home</Link>    
         </div>
     )
 }

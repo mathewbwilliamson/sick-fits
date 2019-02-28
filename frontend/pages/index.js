@@ -5,7 +5,7 @@ const Home = props => {
     return (
         <div>
             <p>Hello!</p>
-            <Link href='/sell'>Sell!</Link>
+            
         </div>
     )
 }
