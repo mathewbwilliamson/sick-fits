@@ -9,6 +9,21 @@ const Mutation = {
         }, info)
 
         return item
+    },
+
+    updateItem(parent, args, ctx, info) {
+        // First take a copy of the updates
+        const updates = { ...args }
+        // Remove the ID from the updates
+        delete updates.id
+        // Run the update method
+        // Information about the updateItem method is found in prisma.graphql
+        return ctx.db.mutation.updateItem({
+            data: updates,
+            where: {
+                id: args.id
+            }
+        }, info)
     }
 };
 
