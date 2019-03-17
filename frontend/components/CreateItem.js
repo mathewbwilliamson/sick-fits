@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Mutation } from "react-apollo";
 import gql from "graphql-tag";
-import Router from 'next/router'
+import Router from "next/router";
 import Form from "./styles/Form";
 import formatMoney from "../lib/formatMoney";
-import Error from './ErrorMessage'
+import Error from "./ErrorMessage";
 
 // Basic Format of Mutation
 // mutation NAME_OF_MUTATION_HERE($title: String!) { <-- Name of Mutation locally, it requires a string for the title
@@ -45,8 +45,8 @@ class CreateItem extends Component {
       price: 0
     };
 
-    this.handleChange = this.handleChange.bind(this)
-    this.uploadFile = this.uploadFile.bind(this)
+    this.handleChange = this.handleChange.bind(this);
+    this.uploadFile = this.uploadFile.bind(this);
   }
 
   handleChange = e => {
@@ -54,30 +54,31 @@ class CreateItem extends Component {
 
     const val = type === "number" ? parseFloat(value) : value;
     this.setState({ [name]: val });
-  }
+  };
 
   uploadFile = async e => {
-      console.log('[matt] uploading file...', )
-      const files = e.target.files
-      const data = new FormData()
-      data.append('file', files[0])
-      data.append('upload_preset', 'sickfits')
+    const files = e.target.files;
+    const data = new FormData();
 
-      const res = await fetch('https://res.cloudinary.com/mwprojects/image/upload/', {
-          method: 'POST',
-          body: data
-      })
+    data.append("file", files[0]);
+    data.append("upload_preset", "sickfits");
 
-      const file = await res.json()
-      console.log('[matt] file', file)
+    const res = await fetch(
+      "https://api.cloudinary.com/v1_1/mwprojects/image/upload/",
+      {
+        method: "POST",
+        body: data
+      }
+    );
 
-      this.setState({
-          image: file.secure_url,
-          largeImage: file.eager[0].secure_url
-      })
-      
-      
-  }
+    const file = await res.json();
+    console.log("[matt] file", file);
+
+    this.setState({
+      image: file.secure_url,
+      largeImage: file.eager[0].secure_url
+    });
+  };
 
   render() {
     return (
@@ -85,30 +86,28 @@ class CreateItem extends Component {
         {(createItem, { loading, error }) => (
           <Form
             onSubmit={async e => {
-                // Prevent Default
-                e.preventDefault();
-                // Call the mutation
-                const res = await createItem()
-                // Send them to the single item page
-                console.log('[matt] res', res)
-                Router.push( {
-                    pathname: '/item',
-                    query: { id: res.data.createItem.id }
-                })
-              
+              // Prevent Default
+              e.preventDefault();
+              // Call the mutation
+              const res = await createItem();
+              // Send them to the single item page
+              console.log("[matt] res", res);
+              Router.push({
+                pathname: "/item",
+                query: { id: res.data.createItem.id }
+              });
             }}
           >
             <h2>Sell an Item</h2>
             <Error error={error} />
             <fieldset disabled={loading} aria-busy={loading}>
-            <label htmlFor="file">
+              <label htmlFor="file">
                 Image
                 <input
                   type="file"
                   id="file"
                   name="file"
                   placeholder="Upload an Image"
-                  value={this.state.image}
                   onChange={this.uploadFile}
                   required
                 />
